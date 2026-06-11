@@ -12,7 +12,7 @@ public class Controller {
     //商品情報を入力
     public void listInput(Scanner scanner, ArrayList<CospaDTO> list) {
         CospaDTO cospaDTO = new CospaDTO();
-        cospaDTO.setId(list.isEmpty() ? 0 : list.get(list.size() - 1).getId() + 1);
+        cospaDTO.setId(list.isEmpty() ? 0 : list.getLast().getId() + 1);
         System.out.println("URL:?");
         cospaDTO.setUrl(scanner.nextLine());
         System.out.println("商品名:?");
@@ -67,7 +67,8 @@ public class Controller {
             System.out.println("キャンセル");
             return;
         }
-        list.remove(id);
+        list.get(id).setDeleted(true);
+        cospaDAO.deleteDB(id);
     }
 
     private void ask() {

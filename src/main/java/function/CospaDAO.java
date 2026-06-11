@@ -2,17 +2,11 @@ package function;
 
 import entity.CospaDTO;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-//ファイルから読み込みと保存
 public class CospaDAO {
-    public static final String DB_URL = "jdbc:h2:mem:~/test";
+    public static final String DB_URL = "jdbc:h2:file:./testDB";
     public static final String DB_USER = "sa";
     public static final String DB_PASSWARD = "";
 
@@ -25,13 +19,13 @@ public class CospaDAO {
             Statement sta = con.createStatement();
 
             sta.execute("""
-     CREATE TABLE IF NOT EXISTS cospa (id INT, url VARCHAR, name VARCHAR, date VARCHAR, cost INT, number INT, purpose INT, calory INT, deleted BOOLEAN);
-     """);
+                    CREATE TABLE IF NOT EXISTS cospa (id INT, url VARCHAR, name VARCHAR, date VARCHAR, cost INT, number INT, purpose INT, calory INT, deleted BOOLEAN);
+                    """);
             ResultSet resultSet = sta.executeQuery("""
-    SELECT *
-    FROM cospa
-    """);
-            while (resultSet.next()){
+                    SELECT *
+                    FROM cospa
+                    """);
+            while (resultSet.next()) {
                 CospaDTO cospaDTO = new CospaDTO();
                 cospaDTO.setUrl(resultSet.getString("url"));
                 cospaDTO.setId(resultSet.getInt("id"));
@@ -47,7 +41,6 @@ public class CospaDAO {
             con.close();
             return list;
         } catch (SQLException e) {
-            System.out.println(e);
             throw new RuntimeException(e);
         }
     }
@@ -58,9 +51,9 @@ public class CospaDAO {
         try {
             Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
             PreparedStatement psta = con.prepareStatement("""
-    INSERT INTO cospa(id, url, name, date, cost, number, purpose, calory, deleted)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """);
+                    INSERT INTO cospa(id, url, name, date, cost, number, purpose, calory, deleted)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """);
             psta.setInt(1, cospaDTO.getId());
             psta.setString(2, cospaDTO.getUrl());
             psta.setString(3, cospaDTO.getName());
@@ -71,6 +64,24 @@ public class CospaDAO {
             psta.setInt(8, cospaDTO.getCalory());
             psta.setBoolean(9, cospaDTO.isDeleted());
 
+            psta.execute();
+
+            con.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //削除フラグをオン
+    public void deleteDB(int id){
+        try {
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            PreparedStatement psta = con.prepareStatement("""
+                    UPDATE cospa
+                    SET deleted = true
+                    WHERE id = ?
+                    """);
+            psta.setInt(1, id);
             psta.execute();
 
             con.close();
