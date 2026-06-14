@@ -89,4 +89,45 @@ public class CospaDAO {
             throw new RuntimeException(e);
         }
     }
-}
+
+    //行を編集
+    public String editDB(String column, int id, String s){
+        try {
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            PreparedStatement psta = con.prepareStatement("""
+                    UPDATE cospa
+                    SET %s = ?
+                    WHERE id = ?
+                    """.formatted(column));
+            psta.setString(1, s);
+            psta.setInt(2, id);
+            psta.execute();
+
+            con.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return s;
+    }
+
+    public int editDB(String column, int id, int i){
+        try {
+            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            PreparedStatement psta = con.prepareStatement("""
+                     UPDATE cospa 
+                     SET %s = ? 
+                     WHERE id = ?
+                     """.formatted(column));
+            psta.setInt(1, i);
+            psta.setInt(2, id);
+            psta.execute();
+
+            con.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return i;
+    }
+    }

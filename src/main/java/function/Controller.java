@@ -50,12 +50,12 @@ public class Controller {
         }
         ask();
         switch (item) {
-            case 1: list.get(id).setUrl(scanner.nextLine()); break;
-            case 2: list.get(id).setName(scanner.nextLine()); break;
-            case 3: list.get(id).setCost(scanner.nextInt()); break;
-            case 4: list.get(id).setNumber(scanner.nextInt()); break;
-            case 5: list.get(id).setPurpose(scanner.nextInt()); break;
-            case 6: list.get(id).setCalory(scanner.nextInt()); break;
+            case 1: list.get(id).setUrl(cospaDAO.editDB("url", id, scanner.nextLine())); break;
+            case 2: list.get(id).setName(cospaDAO.editDB("name", id, scanner.nextLine())); break;
+            case 3: list.get(id).setCost(cospaDAO.editDB("cost", id, scanner.nextInt())); break;
+            case 4: list.get(id).setNumber(cospaDAO.editDB("number", id, scanner.nextInt())); break;
+            case 5: list.get(id).setPurpose(cospaDAO.editDB("purpose", id, scanner.nextInt())); break;
+            case 6: list.get(id).setCalory(cospaDAO.editDB("calory", id, scanner.nextInt())); break;
         }
     }
 
