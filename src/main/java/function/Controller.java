@@ -7,10 +7,19 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller {
-    CospaDAO cospaDAO = new CospaDAO();
+    Scanner scanner;
+    CospaDAO cospaDAO;
+    ArrayList<CospaDTO> list;
+    Display display = new Display();
+
+    public Controller(Scanner scanner){
+        this.scanner = scanner;
+        cospaDAO = new CospaDAO(scanner);
+        list = cospaDAO.load();
+    }
 
     //商品情報を入力
-    public void listInput(Scanner scanner, ArrayList<CospaDTO> list) {
+    public void listInput() {
         CospaDTO cospaDTO = new CospaDTO();
         cospaDTO.setId(list.isEmpty() ? 0 : list.getLast().getId() + 1);
         System.out.println("URL:?");
@@ -32,10 +41,10 @@ public class Controller {
     }
 
     //商品情報を編集
-    public void listEdit(Scanner scanner, ArrayList<CospaDTO> list) {
+    public void listEdit() {
         System.out.println("編集ID:?");
 
-        int id = askId(scanner, list);
+        int id = askId();
         if (id == -1) {
             System.out.println("キャンセル");
             return;
@@ -57,12 +66,13 @@ public class Controller {
             case 5: list.get(id).setPurpose(cospaDAO.editDB("purpose", id, scanner.nextInt())); break;
             case 6: list.get(id).setCalory(cospaDAO.editDB("calory", id, scanner.nextInt())); break;
         }
+        scanner.nextLine();
     }
 
     //商品情報を削除
-    public void delete(Scanner scanner, ArrayList<CospaDTO> list) {
+    public void delete() {
         System.out.println("削除ID:?");
-        int id = askId(scanner, list);
+        int id = askId();
         if (id == -1) {
             System.out.println("キャンセル");
             return;
@@ -75,7 +85,7 @@ public class Controller {
         System.out.println("更新値:?");
     }
 
-    private int askId(Scanner scanner, ArrayList<CospaDTO> list) {
+    private int askId() {
         int id = scanner.nextInt();
         scanner.nextLine();
         for (int i = 0; i < list.size(); i++) {
@@ -84,5 +94,16 @@ public class Controller {
             }
         }
         return -1;
+    }
+
+    //Displayクラスのsortメソッドを呼び出し
+    public void sort(){
+        display.sort(list);
+        System.out.println("戻る:Enter");
+        scanner.nextLine();
+    }
+
+    public void listDisplay(){
+        display.listDisplay(list);
     }
 }
