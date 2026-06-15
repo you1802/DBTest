@@ -3,7 +3,6 @@ package function;
 import entity.CospaDTO;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Display {
 
@@ -26,11 +25,8 @@ public class Display {
     }
 
     //商品情報を複製してソート
-    public void sort(Scanner scanner, ArrayList<CospaDTO> list) {
+    public void sort(ArrayList<CospaDTO> list) {
 
         list.stream().filter(cospaDTO -> !cospaDTO.isDeleted()).sorted((a, b) -> b.getCalory() * 100 / b.getCost() - a.getCalory() * 100 / a.getCost()).forEach(this::cospaDisplay);
-
-        System.out.println("戻る:Enter");
-        scanner.nextLine();
     }
 }

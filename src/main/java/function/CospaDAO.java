@@ -4,18 +4,25 @@ import entity.CospaDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class CospaDAO {
+    Scanner scanner;
+    PropertiesReader proReader;
+
     public static final String DB_URL = "jdbc:h2:file:./testDB";
-    public static final String DB_USER = "sa";
-    public static final String DB_PASSWARD = "";
+
+    public CospaDAO(Scanner scanner){
+        this.scanner = scanner;
+        proReader = new PropertiesReader(scanner);
+    }
 
     //読み込み
     public ArrayList<CospaDTO> load() {
         ArrayList<CospaDTO> list = new ArrayList<>();
 
         try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            Connection con = DriverManager.getConnection(DB_URL, proReader.getUserName(), proReader.getPasswordStr());
             Statement sta = con.createStatement();
 
             sta.execute("""
@@ -49,7 +56,7 @@ public class CospaDAO {
     public void save(CospaDTO cospaDTO){
 
         try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            Connection con = DriverManager.getConnection(DB_URL, proReader.getUserName(), proReader.getPasswordStr());
             PreparedStatement psta = con.prepareStatement("""
                     INSERT INTO cospa(id, url, name, date, cost, number, purpose, calory, deleted)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -75,7 +82,7 @@ public class CospaDAO {
     //削除フラグをオン
     public void deleteDB(int id){
         try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            Connection con = DriverManager.getConnection(DB_URL, proReader.getUserName(), proReader.getPasswordStr());
             PreparedStatement psta = con.prepareStatement("""
                     UPDATE cospa
                     SET deleted = true
@@ -93,7 +100,7 @@ public class CospaDAO {
     //行を編集
     public String editDB(String column, int id, String s){
         try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            Connection con = DriverManager.getConnection(DB_URL, proReader.getUserName(), proReader.getPasswordStr());
             PreparedStatement psta = con.prepareStatement("""
                     UPDATE cospa
                     SET %s = ?
@@ -113,7 +120,7 @@ public class CospaDAO {
 
     public int editDB(String column, int id, int i){
         try {
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWARD);
+            Connection con = DriverManager.getConnection(DB_URL, proReader.getUserName(), proReader.getPasswordStr());
             PreparedStatement psta = con.prepareStatement("""
                      UPDATE cospa 
                      SET %s = ? 
